@@ -1,0 +1,67 @@
+# =========================================================================
+# Compiled Java and Maven files
+# These are the output files from your build process. They are generated
+# from your source code, so they don't need to be tracked.
+# =========================================================================
+/target/
+!/target/user_jars/
+
+# The .jar, .war, or .ear file is the final packaged application.
+*.jar
+*.war
+*.ear
+
+
+# =========================================================================
+# IDE and System Specific Files
+# Every developer has a different IDE and operating system. These files
+# are specific to their local setup and should not be shared.
+# =========================================================================
+
+# IntelliJ IDEA files
+.idea/
+*.iml
+*.iws
+
+# Eclipse files
+.classpath
+.project
+.settings/
+
+# VS Code files
+.vscode/
+
+# macOS files
+.DS_Store
+
+# Windows thumbnail cache
+Thumbs.db
+
+
+# =========================================================================
+# Log and Temporary Files
+# Log files and temporary files are created during runtime and are not
+# part of the source code.
+# =========================================================================
+*.log
+/logs/
+/tmp/
+
+
+# =========================================================================
+# Local Configuration
+# Any local override configuration files that might contain sensitive
+# information or local-only settings.
+# =========================================================================
+application-local.properties
+application-local.yml
+application-dev.properties
+application-dev.yml
+
+
+# =========================================================================
+# Maven Specific
+# The Maven wrapper's embedded JAR file. If you run ./mvnw, this will
+# be downloaded, so there's no need to commit it.
+# =========================================================================
+.mvn/wrapper/maven-wrapper.jar
