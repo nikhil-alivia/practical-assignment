@@ -18,8 +18,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<Map<String, String>> handleValidationExceptions(
-		MethodArgumentNotValidException ex
-	){
+			MethodArgumentNotValidException ex
+	) {
 		Map<String, String> errors = new HashMap<>();
 		ex.getBindingResult().getFieldErrors().forEach(
 				error -> errors.put(
@@ -32,9 +32,17 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ResponseEntity<Map<String, String>> handleMissingRequestBody() {
+	public ResponseEntity<Map<String, String>> handleMissingRequestBody(HttpMessageNotReadableException ex) {
 		Map<String, String> errors = new HashMap<>();
 		errors.put("error", "Request body is missing or malformed");
 		return ResponseEntity.badRequest().body(errors);
 	}
+
+	@ExceptionHandler(APIException.class)
+	public ResponseEntity<Map<String, String>> handleAPIException(APIException ex) {
+		Map<String, String> errors = new HashMap<>();
+		errors.put("error", ex.getMessage());
+		return new ResponseEntity<>(errors, ex.getStatus());
+	}
+
 }
