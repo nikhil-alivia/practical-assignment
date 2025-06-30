@@ -1,5 +1,6 @@
 package dev.nikhilj.authservice.config;
 
+import dev.nikhilj.authservice.security.JWTAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +12,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -22,6 +25,9 @@ import java.util.List;
 @EnableMethodSecurity
 @AllArgsConstructor
 public class SecurityConfig {
+
+	private AuthenticationEntryPoint authenticationEntryPoint;
+	private JWTAuthenticationFilter authenticationFilter;
 
 	@Bean
 	public static PasswordEncoder passwordEncoder() {
@@ -51,7 +57,8 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain securityFilterChain(
-			HttpSecurity httpSecurity
+			HttpSecurity httpSecurity,
+			JWTAuthenticationFilter jWTAuthenticationFilter
 	) throws Exception {
 		httpSecurity.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(
@@ -59,11 +66,13 @@ public class SecurityConfig {
 								.requestMatchers("/api/auth/**").permitAll()
 								.anyRequest().authenticated()
 				)
+				.exceptionHandling(exc -> exc.authenticationEntryPoint(authenticationEntryPoint))
 				.sessionManagement(
 						session -> session.sessionCreationPolicy(
 								SessionCreationPolicy.STATELESS
 						)
 				);
+		httpSecurity.addFilterBefore(jWTAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		return httpSecurity.build();
 	}
 

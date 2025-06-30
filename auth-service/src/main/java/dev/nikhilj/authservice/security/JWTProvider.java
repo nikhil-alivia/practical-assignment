@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -56,19 +58,12 @@ public class JWTProvider {
 		return extractAllClaims(token).getSubject();
 	}
 
-	public List<String> getAuthorities(String token) {
-		Object authorities = extractAllClaims(token).get("authorities");
-		if (authorities instanceof List<?> list) {
-			try {
-				if (!list.isEmpty() && list.getFirst() instanceof String) {
-					return (List<String>) list;
-				}
-			} catch (NoSuchElementException exc) {
-
-				throw new APIException(HttpStatus.BAD_REQUEST, "JWT has no claims for authorities");
-			}
-		}
-		throw new APIException(HttpStatus.BAD_REQUEST, "JWT has no claims for authorities");
+	public List<SimpleGrantedAuthority> getAuthorities(String token) {
+		List<String> authorities = extractAllClaims(token).get("authorities", List.class);
+		if (authorities == null) return Collections.emptyList();
+		return authorities.stream()
+				.map(SimpleGrantedAuthority::new)
+				.toList();
 	}
 
 
