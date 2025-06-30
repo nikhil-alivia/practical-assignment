@@ -8,7 +8,6 @@ import dev.nikhilj.authservice.exceptions.APIException;
 import dev.nikhilj.authservice.repositories.RoleRepository;
 import dev.nikhilj.authservice.repositories.UserRepository;
 import dev.nikhilj.authservice.security.JWTProvider;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;

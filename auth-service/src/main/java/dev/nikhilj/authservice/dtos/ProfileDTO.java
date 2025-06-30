@@ -1,10 +1,8 @@
 package dev.nikhilj.authservice.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.NoArgsConstructor;
 
 public record ProfileDTO(
 		@JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -18,8 +16,7 @@ public record ProfileDTO(
 		@NotEmpty
 		@Size(min = 4, message = "Username should have at least 4 characters")
 		String username,
-		@NotEmpty
-		@Email(message = "Email should be valid")
+		@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 		String email
 ) {
 }

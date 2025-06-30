@@ -2,8 +2,10 @@ package dev.nikhilj.authservice.services;
 
 import dev.nikhilj.authservice.dtos.ProfileDTO;
 import dev.nikhilj.authservice.entitites.User;
+import dev.nikhilj.authservice.exceptions.APIException;
 import dev.nikhilj.authservice.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -31,6 +33,19 @@ public class CustomUserDetailsService implements UserDetailsService {
 	public ProfileDTO loadUserProfile(String username) throws UsernameNotFoundException {
 		User user = userRepository.findByUsernameOrEmail(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+		return mapToDTO(user);
+	}
+
+	public ProfileDTO saveUserProfile(ProfileDTO profileDTO, String username) throws UsernameNotFoundException {
+		User user = userRepository.findByUsernameOrEmail(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+		if (userRepository.existsByUsernameAndIdNot(profileDTO.username(), user.getId())) {
+			throw new APIException(HttpStatus.BAD_REQUEST, "Username already exists");
+		}
+		user.setUsername(profileDTO.username());
+		user.setFirstName(profileDTO.firstName());
+		user.setLastName(profileDTO.lastName());
+		userRepository.save(user);
 		return mapToDTO(user);
 	}
 
