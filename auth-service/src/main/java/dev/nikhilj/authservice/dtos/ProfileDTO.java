@@ -1,10 +1,14 @@
 package dev.nikhilj.authservice.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import lombok.NoArgsConstructor;
 
 public record ProfileDTO(
+		@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+		Long id,
 		@NotEmpty
 		@Size(min = 2, message = "First Name should have at least 2 characters")
 		String firstName,
