@@ -2,7 +2,7 @@ package dev.nikhilj.authservice.services;
 
 import dev.nikhilj.authservice.dtos.ProfileDTO;
 import dev.nikhilj.authservice.entitites.User;
-import dev.nikhilj.authservice.exceptions.APIException;
+import dev.nikhilj.common.security.exceptions.APIException;
 import dev.nikhilj.authservice.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

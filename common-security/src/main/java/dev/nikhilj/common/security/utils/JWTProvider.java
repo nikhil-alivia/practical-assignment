@@ -1,6 +1,6 @@
-package dev.nikhilj.authservice.security;
+package dev.nikhilj.common.security.utils;
 
-import dev.nikhilj.authservice.exceptions.APIException;
+import dev.nikhilj.common.security.exceptions.APIException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

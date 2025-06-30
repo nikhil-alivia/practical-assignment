@@ -1,6 +1,6 @@
 package dev.nikhilj.authservice.exceptions;
 
-import org.apache.coyote.Response;
+import dev.nikhilj.common.security.exceptions.APIException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

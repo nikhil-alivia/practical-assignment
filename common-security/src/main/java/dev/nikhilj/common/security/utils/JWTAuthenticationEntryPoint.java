@@ -1,4 +1,4 @@
-package dev.nikhilj.authservice.security;
+package dev.nikhilj.common.security.utils;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

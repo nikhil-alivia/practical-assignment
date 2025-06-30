@@ -1,4 +1,4 @@
-package dev.nikhilj.authservice.exceptions;
+package dev.nikhilj.common.security.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

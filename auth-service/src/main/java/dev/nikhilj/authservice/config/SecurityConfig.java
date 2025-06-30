@@ -1,7 +1,7 @@
 package dev.nikhilj.authservice.config;
 
 import dev.nikhilj.authservice.services.CustomUserDetailsService;
-import dev.nikhilj.authservice.security.JWTAuthenticationFilter;
+import dev.nikhilj.common.security.utils.JWTAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
