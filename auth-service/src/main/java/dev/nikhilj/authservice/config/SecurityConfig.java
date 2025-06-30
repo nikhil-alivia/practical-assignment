@@ -1,5 +1,6 @@
 package dev.nikhilj.authservice.config;
 
+import dev.nikhilj.authservice.services.CustomUserDetailsService;
 import dev.nikhilj.authservice.security.JWTAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,7 @@ public class SecurityConfig {
 
 	private AuthenticationEntryPoint authenticationEntryPoint;
 	private JWTAuthenticationFilter authenticationFilter;
+	private CustomUserDetailsService userDetailsService;
 
 	@Bean
 	public static PasswordEncoder passwordEncoder() {
