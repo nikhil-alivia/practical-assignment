@@ -29,7 +29,6 @@ public class SecurityConfig {
 
 	private AuthenticationEntryPoint authenticationEntryPoint;
 	private JWTAuthenticationFilter authenticationFilter;
-	private CustomUserDetailsService userDetailsService;
 
 	@Bean
 	public static PasswordEncoder passwordEncoder() {
@@ -59,8 +58,7 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain securityFilterChain(
-			HttpSecurity httpSecurity,
-			JWTAuthenticationFilter jWTAuthenticationFilter
+			HttpSecurity httpSecurity
 	) throws Exception {
 		httpSecurity.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(
@@ -74,7 +72,7 @@ public class SecurityConfig {
 								SessionCreationPolicy.STATELESS
 						)
 				);
-		httpSecurity.addFilterBefore(jWTAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+		httpSecurity.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		return httpSecurity.build();
 	}
 
