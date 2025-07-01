@@ -88,7 +88,7 @@
         </dependency>
         <dependency>
             <groupId>dev.nikhilj</groupId>
-            <artifactId>common-security</artifactId>
+            <artifactId>commons</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
