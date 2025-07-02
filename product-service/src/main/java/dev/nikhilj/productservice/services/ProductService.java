@@ -8,6 +8,7 @@ import dev.nikhilj.productservice.repositories.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class ProductService {
 		return new ArrayList<ProductDTO>();
 	}
 
+	@Transactional
 	public ProductDTO createProduct(ProductDTO productDTO) {
 		Product product = new Product();
 		product.setName(productDTO.name());
@@ -45,6 +47,7 @@ public class ProductService {
 		return mapToDTO(product);
 	}
 
+	@Transactional
 	public ProductDTO updateProduct(Long productId, ProductDTO productDTO) {
 		Product product = productRepository.getProductById(productId)
 				.orElseThrow(() -> new APIException(HttpStatus.NOT_FOUND, "Not found product with id " + productId));
@@ -64,7 +67,12 @@ public class ProductService {
 		return mapToDTO(product);
 	}
 
+	@Transactional
 	public void deleteProductById(Long productId) {
+		Product product = productRepository.getProductById(productId)
+				.orElseThrow(() -> new APIException(HttpStatus.NOT_FOUND, "Product not found with id " + productId));
+		priceService.deletePricesByProduct(product);
+		productRepository.delete(product);
 	}
 
 	private ProductDTO mapToDTO(Product product) {

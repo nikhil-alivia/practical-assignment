@@ -7,6 +7,7 @@ import dev.nikhilj.productservice.repositories.PriceRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -17,6 +18,7 @@ public class PriceService {
 
 	private final PriceRepository priceRepository;
 
+	@Transactional
 	public Price create(BigDecimal amount, Product product) {
 		Price price = new Price();
 		price.setAmount(amount);
@@ -24,12 +26,18 @@ public class PriceService {
 		return priceRepository.save(price);
 	}
 
+	@Transactional
 	public Price getOrCreate(BigDecimal amount, Product product) {
 		return priceRepository.getPriceByAmountAndProductId(
 				amount, product.getId()
 		).orElseGet(() -> priceRepository.save(
 				new Price(amount, product)
 		));
+	}
+
+	@Transactional
+	public void deletePricesByProduct(Product product) {
+		priceRepository.deletePricesByProductId(product.getId());
 	}
 
 }
