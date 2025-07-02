@@ -23,9 +23,6 @@ public class Price extends AuditableEntity {
 	@Column(name = "amount", nullable = false, updatable = false)
 	private BigDecimal amount;
 
-	@Column(name = "is_active", nullable = false)
-	private boolean isActive;
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id")
 	private Product product;

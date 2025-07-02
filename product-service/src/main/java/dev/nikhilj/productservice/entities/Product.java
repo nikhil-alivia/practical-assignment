@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JoinFormula;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SoftDelete;
 
@@ -29,6 +30,10 @@ public class Product extends AuditableEntity {
 	@Min(value = 0, message = "Stock quantity can not be negative")
 	@Column(name = "stock_quantity", nullable = false)
 	private Long stockQuantity;
+
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "active_price_id", unique = true)
+	private Price activePrice;
 
 
 }
