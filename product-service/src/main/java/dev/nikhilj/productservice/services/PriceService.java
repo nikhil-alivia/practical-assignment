@@ -17,11 +17,19 @@ public class PriceService {
 
 	private final PriceRepository priceRepository;
 
-	public Price create( BigDecimal amount, Product product) {
+	public Price create(BigDecimal amount, Product product) {
 		Price price = new Price();
 		price.setAmount(amount);
 		price.setProduct(product);
 		return priceRepository.save(price);
+	}
+
+	public Price getOrCreate(BigDecimal amount, Product product) {
+		return priceRepository.getPriceByAmountAndProductId(
+				amount, product.getId()
+		).orElseGet(() -> priceRepository.save(
+				new Price(amount, product)
+		));
 	}
 
 }

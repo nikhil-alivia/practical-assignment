@@ -4,15 +4,14 @@ import dev.nikhilj.common.security.exceptions.APIException;
 import dev.nikhilj.productservice.dtos.ProductDTO;
 import dev.nikhilj.productservice.entities.Price;
 import dev.nikhilj.productservice.entities.Product;
-import dev.nikhilj.productservice.repositories.PriceRepository;
 import dev.nikhilj.productservice.repositories.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @AllArgsConstructor
 @Service
@@ -47,7 +46,22 @@ public class ProductService {
 	}
 
 	public ProductDTO updateProduct(Long productId, ProductDTO productDTO) {
-		return productDTO;
+		Product product = productRepository.getProductById(productId)
+				.orElseThrow(() -> new APIException(HttpStatus.NOT_FOUND, "Not found product with id " + productId));
+		product.setDescription(productDTO.description());
+		product.setStockQuantity(productDTO.stockQuantity());
+
+		product = productRepository.save(product);
+
+		Price price = product.getActivePrice();
+
+		if (!Objects.equals(price.getAmount(), productDTO.price())) {
+			price = priceService.getOrCreate(productDTO.price(), product);
+			product.setActivePrice(price);
+			product = productRepository.save(product);
+		}
+
+		return mapToDTO(product);
 	}
 
 	public void deleteProductById(Long productId) {

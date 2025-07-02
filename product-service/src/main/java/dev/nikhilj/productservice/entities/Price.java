@@ -27,4 +27,9 @@ public class Price extends AuditableEntity {
 	@JoinColumn(name = "product_id")
 	private Product product;
 
+	public Price(BigDecimal amount, Product product) {
+		this.amount = amount;
+		this.product = product;
+	}
+
 }
