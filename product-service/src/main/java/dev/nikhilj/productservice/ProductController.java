@@ -1,15 +1,13 @@
 package dev.nikhilj.productservice;
 
+import dev.nikhilj.productservice.dtos.PaginatedProductsDTO;
 import dev.nikhilj.productservice.dtos.ProductDTO;
 import dev.nikhilj.productservice.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -19,11 +17,13 @@ public class ProductController {
 	private ProductService productService;
 
 	@GetMapping
-	public ResponseEntity<List<ProductDTO>> productListing(
-			@Param("id") Long productId
+	public ResponseEntity<PaginatedProductsDTO> productListing(
+			@RequestParam(value = "pageNo", defaultValue = "0", required = false)
+			int pageNo,
+			@RequestParam(value = "pageSize", defaultValue = "10", required = false)
+			int pageSize
 	) {
-		List<ProductDTO> products = productService.getProductsPaginated();
-		return ResponseEntity.ok(products);
+		return ResponseEntity.ok(productService.getProductsPaginated(pageNo, pageSize));
 	}
 
 	@PostMapping
