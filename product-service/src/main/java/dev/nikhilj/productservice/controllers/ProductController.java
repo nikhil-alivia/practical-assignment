@@ -1,4 +1,4 @@
-package dev.nikhilj.productservice;
+package dev.nikhilj.productservice.controllers;
 
 import dev.nikhilj.productservice.dtos.PaginatedProductsDTO;
 import dev.nikhilj.productservice.dtos.ProductDTO;
