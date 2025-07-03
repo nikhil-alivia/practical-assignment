@@ -23,9 +23,9 @@ public class ProductService {
 	private final ProductRepository productRepository;
 	private final PriceService priceService;
 
-	public PaginatedProductsDTO getProductsPaginated(int pageNo, int pageSize) {
+	public PaginatedProductsDTO getProductsPaginated(int pageNo, int pageSize, String searchString) {
 		Pageable pageable = PageRequest.of(pageNo, pageSize);
-		Page<Product> products = productRepository.findAll(pageable);
+		Page<Product> products = searchString.isBlank() ? productRepository.findAll(pageable) : productRepository.searchProducts(searchString, pageable);
 		return new PaginatedProductsDTO(
 				products.getContent()
 						.stream()

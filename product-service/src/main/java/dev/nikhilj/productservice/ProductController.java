@@ -21,9 +21,11 @@ public class ProductController {
 			@RequestParam(value = "pageNo", defaultValue = "0", required = false)
 			int pageNo,
 			@RequestParam(value = "pageSize", defaultValue = "10", required = false)
-			int pageSize
+			int pageSize,
+			@RequestParam(value = "search", defaultValue = "", required = false)
+			String searchString
 	) {
-		return ResponseEntity.ok(productService.getProductsPaginated(pageNo, pageSize));
+		return ResponseEntity.ok(productService.getProductsPaginated(pageNo, pageSize, searchString));
 	}
 
 	@PostMapping
