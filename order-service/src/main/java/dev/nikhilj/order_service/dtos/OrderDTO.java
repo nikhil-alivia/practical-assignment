@@ -7,7 +7,7 @@ import java.util.Set;
 
 public record OrderDTO(
 		Long id,
-		UserDTO user,
+//		UserDTO user,
 		OrderStatus status,
 		BigDecimal total,
 		Set<OrderItemDTO> orderItems

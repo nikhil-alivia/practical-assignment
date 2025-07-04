@@ -1,5 +1,11 @@
 package dev.nikhilj.order_service.controllers;
 
+import dev.nikhilj.order_service.dtos.CreateOrderDTO;
+import dev.nikhilj.order_service.dtos.OrderDTO;
+import dev.nikhilj.order_service.dtos.PaginatedOrderDTO;
+import dev.nikhilj.order_service.dtos.UpdateOrderDTO;
+import dev.nikhilj.order_service.services.OrderService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,28 +15,37 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/orders")
 public class OrderController {
 
+	private final OrderService orderService;
+
 	@PostMapping
-	public ResponseEntity<Void> createProduct() {
-		// Order Service . createProduct(dto);
-		return ResponseEntity.ok(null);
+	public ResponseEntity<OrderDTO> createProduct(
+			@RequestBody @Valid CreateOrderDTO createOrderDTO
+	) {
+		return ResponseEntity.ok(orderService.createOrder(createOrderDTO));
 	}
 
 	@GetMapping
-	public ResponseEntity<Void> getOrders() {
-		// Order Service .get Orders(User or admin)
-		return ResponseEntity.ok(null);
+	public ResponseEntity<PaginatedOrderDTO> getOrders(
+			@RequestParam(value = "pageNo", defaultValue = "0", required = false)
+			int pageNo,
+			@RequestParam(value = "pageSize", defaultValue = "10", required = false)
+			int pageSize
+	) {
+		return ResponseEntity.ok(orderService.getAllOrders(pageNo, pageSize));
 	}
 
 	@GetMapping("/{orderId}")
-	public ResponseEntity<Void> getOrder(@PathVariable("orderId") Long orderId) {
-		// Order Service . get Order By Id
-		return ResponseEntity.ok(null);
+	public ResponseEntity<OrderDTO> getOrder(@PathVariable("orderId") Long orderId) {
+		return ResponseEntity.ok(orderService.getOrder(orderId));
 	}
 
 	@PutMapping("/{orderId}")
-	public ResponseEntity<Void> updateOrder(@PathVariable("orderId") Long orderId) {
+	public ResponseEntity<OrderDTO> updateOrder(
+			@PathVariable("orderId") Long orderId,
+			@RequestBody @Valid UpdateOrderDTO updateOrderDTO
+	) {
 		// Order Service . update Order by Id and dto
-		return ResponseEntity.ok(null);
+		return ResponseEntity.ok(orderService.updateOrder(orderId, updateOrderDTO));
 	}
 
 }

@@ -1,4 +1,4 @@
-package dev.nikhilj.productservice.config;
+package dev.nikhilj.order_service.config;
 
 import dev.nikhilj.common.security.utils.JWTAuthenticationFilter;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -21,12 +19,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+@AllArgsConstructor
 @Configuration
 @EnableMethodSecurity
-@AllArgsConstructor
 public class SecurityConfig {
 	private AuthenticationEntryPoint authenticationEntryPoint;
 	private JWTAuthenticationFilter authenticationFilter;
+
 
 	@Bean
 	public static AuthenticationManager authenticationManager(
@@ -35,7 +34,6 @@ public class SecurityConfig {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
 
-	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration corsConfig = new CorsConfiguration();
 		corsConfig.setAllowedOrigins(List.of("*"));
@@ -55,7 +53,6 @@ public class SecurityConfig {
 		httpSecurity.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(
 						authorize -> authorize
-								.requestMatchers("GET", "/api/**").permitAll()
 								.anyRequest().authenticated()
 				)
 				.exceptionHandling(exc -> exc.authenticationEntryPoint(authenticationEntryPoint))
@@ -67,6 +64,4 @@ public class SecurityConfig {
 		httpSecurity.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		return httpSecurity.build();
 	}
-
-
 }

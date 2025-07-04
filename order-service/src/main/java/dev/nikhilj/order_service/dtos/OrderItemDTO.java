@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public record OrderItemDTO(
 		Long id,
-		ProductDTO product,
+//		ProductDTO product,
 		int quantity,
 		BigDecimal lineTotal
 ) {
