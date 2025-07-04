@@ -1,4 +1,4 @@
-package dev.nikhilj.order_service.services;
+package dev.nikhilj.order_service.repositories;
 
 import dev.nikhilj.order_service.entities.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
