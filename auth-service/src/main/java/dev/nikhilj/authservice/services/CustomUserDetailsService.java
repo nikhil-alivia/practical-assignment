@@ -2,6 +2,7 @@ package dev.nikhilj.authservice.services;
 
 import dev.nikhilj.authservice.dtos.ProfileDTO;
 import dev.nikhilj.authservice.entitites.User;
+import dev.nikhilj.common.security.UserPrincipal;
 import dev.nikhilj.common.security.exceptions.APIException;
 import dev.nikhilj.authservice.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 		User user = userRepository.findByUsernameOrEmail(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 		Set<SimpleGrantedAuthority> authorities = user.getAuthorities();
-		return new org.springframework.security.core.userdetails.User(
+		return new UserPrincipal(
+				user.getId(),
 				user.getEmail(),
 				user.getPassword(),
 				authorities

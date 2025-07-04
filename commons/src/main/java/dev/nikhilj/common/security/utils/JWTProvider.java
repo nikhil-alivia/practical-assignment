@@ -1,5 +1,6 @@
 package dev.nikhilj.common.security.utils;
 
+import dev.nikhilj.common.security.UserPrincipal;
 import dev.nikhilj.common.security.exceptions.APIException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -28,7 +28,7 @@ public class JWTProvider {
 	private long jwtExpirationDate;
 
 	public String generateToken(Authentication authentication) {
-		User user = (User) authentication.getPrincipal();
+		UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
 		Date now = new Date();
 		Date expDate = new Date(now.getTime() + jwtExpirationDate);
 
@@ -41,6 +41,7 @@ public class JWTProvider {
 		return Jwts.builder()
 				.subject(user.getUsername())
 				.claim("authorities", authorities)
+				.claim("userId", user.getId())
 				.issuedAt(now)
 				.expiration(expDate)
 				.signWith(key())
@@ -55,6 +56,10 @@ public class JWTProvider {
 
 	public String getUsername(String token) {
 		return extractAllClaims(token).getSubject();
+	}
+
+	public Long getId(String token) {
+		return extractAllClaims(token).get("userId", Long.class);
 	}
 
 	public List<SimpleGrantedAuthority> getAuthorities(String token) {
