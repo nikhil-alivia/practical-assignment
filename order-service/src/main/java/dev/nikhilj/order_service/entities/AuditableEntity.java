@@ -1,4 +1,4 @@
-package dev.nikhilj.productservice.entities;
+package dev.nikhilj.order_service.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
