@@ -3,7 +3,9 @@ package dev.nikhilj.order_service;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
+@EnableMethodSecurity(prePostEnabled = true)
 @SpringBootApplication(scanBasePackages = {
 		"dev.nikhilj.order_service",
 		"dev.nikhilj.common"

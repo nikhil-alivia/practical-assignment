@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
@@ -29,6 +30,7 @@ public class ProductController {
 	}
 
 	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid ProductDTO productDTO) {
 		ProductDTO product = productService.createProduct(productDTO);
 		return new ResponseEntity<>(
@@ -43,12 +45,14 @@ public class ProductController {
 	}
 
 	@PutMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ProductDTO> updateProduct(@PathVariable("id") Long productId, @RequestBody @Valid ProductDTO productDTO) {
 		ProductDTO product = productService.updateProduct(productId, productDTO);
 		return ResponseEntity.ok(product);
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Void> deleteProduct(@PathVariable("id") Long productId) {
 		productService.deleteProductById(productId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -1,7 +1,7 @@
 package dev.nikhilj.order_service.services;
 
 import dev.nikhilj.common.security.exceptions.APIException;
-import dev.nikhilj.order_service.OrderRepository;
+import dev.nikhilj.order_service.repositories.OrderRepository;
 import dev.nikhilj.order_service.dtos.*;
 import dev.nikhilj.order_service.entities.Order;
 import dev.nikhilj.order_service.entities.OrderItem;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,10 @@ public class OrderService {
 			orderItem.setPriceId(orderItemDto.price_id());
 			orderItem.setQuantity(orderItemDto.quantity());
 			orderItem.setOrder(finalOrder);
-			// TODO: Make API call here to set the line item total
+			// TODO: Make API call here to
+			//	  - validate the stock is present
+			//    - reserve the stock
+			//    - set the line item total
 			orderItem.setLineTotal(new BigDecimal(0));
 			orderItemsSet.add(orderItem);
 		});
@@ -88,6 +92,12 @@ public class OrderService {
 			order = orderRepository.save(order);
 		}
 		return mapToDTO(order);
+	}
+
+	public boolean isOrderOwner(Long userId, Long orderId) {
+		Order order = orderRepository.getOrderById(orderId)
+				.orElseThrow(() -> new APIException(HttpStatus.NOT_FOUND, "Order not found with id" + orderId));
+		return Objects.equals(order.getUserId(), userId);
 	}
 
 	private OrderDTO mapToDTO(Order order) {

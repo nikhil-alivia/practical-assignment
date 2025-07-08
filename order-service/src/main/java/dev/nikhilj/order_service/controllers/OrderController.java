@@ -1,5 +1,6 @@
 package dev.nikhilj.order_service.controllers;
 
+import dev.nikhilj.common.security.UserPrincipal;
 import dev.nikhilj.order_service.dtos.CreateOrderDTO;
 import dev.nikhilj.order_service.dtos.OrderDTO;
 import dev.nikhilj.order_service.dtos.PaginatedOrderDTO;
@@ -8,6 +9,7 @@ import dev.nikhilj.order_service.services.OrderService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
@@ -18,6 +20,7 @@ public class OrderController {
 	private final OrderService orderService;
 
 	@PostMapping
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<OrderDTO> createProduct(
 			@RequestBody @Valid CreateOrderDTO createOrderDTO
 	) {
@@ -35,11 +38,13 @@ public class OrderController {
 	}
 
 	@GetMapping("/{orderId}")
+	@PreAuthorize("@orderService.isOrderOwner(authentication.principal.id, #orderId) OR hasRole('ADMIN')")
 	public ResponseEntity<OrderDTO> getOrder(@PathVariable("orderId") Long orderId) {
 		return ResponseEntity.ok(orderService.getOrder(orderId));
 	}
 
 	@PutMapping("/{orderId}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<OrderDTO> updateOrder(
 			@PathVariable("orderId") Long orderId,
 			@RequestBody @Valid UpdateOrderDTO updateOrderDTO

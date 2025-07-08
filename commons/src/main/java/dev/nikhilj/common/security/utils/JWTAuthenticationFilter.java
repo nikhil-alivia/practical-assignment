@@ -1,5 +1,6 @@
 package dev.nikhilj.common.security.utils;
 
+import dev.nikhilj.common.security.UserPrincipal;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,15 +36,16 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
 			if (StringUtils.hasText(token) && jwtProvider.validateToken(token)) {
 				String username = jwtProvider.getUsername(token);
+				Long userId = jwtProvider.getId(token);
 
 				List<SimpleGrantedAuthority> authorities = jwtProvider.getAuthorities(token);
 
-				UserDetails userDetails = new User(username, "", authorities);
+				UserPrincipal userPrincipal = new UserPrincipal(userId, username, "", authorities);
 
 				var authentication = new UsernamePasswordAuthenticationToken(
-						userDetails,
+						userPrincipal,
 						"",
-						userDetails.getAuthorities()
+						userPrincipal.getAuthorities()
 				);
 
 				authentication.setDetails(
