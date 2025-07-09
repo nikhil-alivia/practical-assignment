@@ -12,7 +12,7 @@ public class ProductClientService {
 	private final WebClient webClient;
 
 	ProductClientService(WebClient.Builder webClientBuilder) {
-		webClient = webClientBuilder.baseUrl("http://localhost:8082").build();
+		webClient = webClientBuilder.baseUrl("http://product-service").build();
 	}
 
 	public ProductDTO reserveStock(
