@@ -1,7 +1,7 @@
 package dev.nikhilj.order_service.services;
 
 import dev.nikhilj.common.security.UserPrincipal;
-import dev.nikhilj.common.security.exceptions.APIException;
+import dev.nikhilj.common.exceptions.APIException;
 import dev.nikhilj.order_service.dtos.*;
 import dev.nikhilj.order_service.entities.Order;
 import dev.nikhilj.order_service.entities.OrderItem;

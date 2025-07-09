@@ -4,7 +4,7 @@ import dev.nikhilj.authservice.dtos.LoginDTO;
 import dev.nikhilj.authservice.dtos.RegisterDTO;
 import dev.nikhilj.authservice.entitites.Role;
 import dev.nikhilj.authservice.entitites.User;
-import dev.nikhilj.common.security.exceptions.APIException;
+import dev.nikhilj.common.exceptions.APIException;
 import dev.nikhilj.authservice.repositories.RoleRepository;
 import dev.nikhilj.authservice.repositories.UserRepository;
 import dev.nikhilj.common.security.utils.JWTProvider;

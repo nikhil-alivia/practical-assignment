@@ -1,7 +1,7 @@
 package dev.nikhilj.common.security.utils;
 
 import dev.nikhilj.common.security.UserPrincipal;
-import dev.nikhilj.common.security.exceptions.APIException;
+import dev.nikhilj.common.exceptions.APIException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

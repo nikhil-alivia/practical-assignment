@@ -1,4 +1,4 @@
-package dev.nikhilj.common.security.exceptions;
+package dev.nikhilj.common.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

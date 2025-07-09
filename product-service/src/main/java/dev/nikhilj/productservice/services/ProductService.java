@@ -1,6 +1,6 @@
 package dev.nikhilj.productservice.services;
 
-import dev.nikhilj.common.security.exceptions.APIException;
+import dev.nikhilj.common.exceptions.APIException;
 import dev.nikhilj.productservice.dtos.PaginatedProductsDTO;
 import dev.nikhilj.productservice.dtos.ProductDTO;
 import dev.nikhilj.productservice.entities.Price;
