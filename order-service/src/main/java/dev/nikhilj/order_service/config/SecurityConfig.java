@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -25,6 +26,7 @@ import java.util.List;
 public class SecurityConfig {
 	private AuthenticationEntryPoint authenticationEntryPoint;
 	private JWTAuthenticationFilter authenticationFilter;
+	private AccessDeniedHandler accessDeniedHandler;
 
 
 	@Bean
@@ -55,7 +57,10 @@ public class SecurityConfig {
 						authorize -> authorize
 								.anyRequest().authenticated()
 				)
-				.exceptionHandling(exc -> exc.authenticationEntryPoint(authenticationEntryPoint))
+				.exceptionHandling(
+						exc -> exc.authenticationEntryPoint(authenticationEntryPoint)
+								.accessDeniedHandler(accessDeniedHandler)
+				)
 				.sessionManagement(
 						session -> session.sessionCreationPolicy(
 								SessionCreationPolicy.STATELESS

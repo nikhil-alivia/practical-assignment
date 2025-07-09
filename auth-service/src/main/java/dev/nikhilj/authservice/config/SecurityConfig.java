@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -29,6 +30,7 @@ public class SecurityConfig {
 
 	private AuthenticationEntryPoint authenticationEntryPoint;
 	private JWTAuthenticationFilter authenticationFilter;
+	private AccessDeniedHandler accessDeniedHandler;
 
 	@Bean
 	public static PasswordEncoder passwordEncoder() {
@@ -66,7 +68,10 @@ public class SecurityConfig {
 								.requestMatchers("/api/auth/**").permitAll()
 								.anyRequest().authenticated()
 				)
-				.exceptionHandling(exc -> exc.authenticationEntryPoint(authenticationEntryPoint))
+				.exceptionHandling(
+						exc -> exc.authenticationEntryPoint(authenticationEntryPoint)
+								.accessDeniedHandler(accessDeniedHandler)
+				)
 				.sessionManagement(
 						session -> session.sessionCreationPolicy(
 								SessionCreationPolicy.STATELESS
