@@ -2,6 +2,7 @@ package dev.nikhilj.common.exceptions;
 
 import dev.nikhilj.common.dtos.GenericErrorResponseDTO;
 import dev.nikhilj.common.dtos.MethodArgumentNotValidDTO;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -38,6 +39,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 				validationErrors
 		);
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<Object> handleDataIntegrityViolation(
+			DataIntegrityViolationException ex
+	) {
+		Map<String, Object> body = new HashMap<>();
+
+		String message = "A database constraint was violated. This may be due to a duplicate entry.";
+
+		if (ex.getRootCause() != null && ex.getRootCause().getMessage().contains("UNIQUE KEY constraint")) {
+			message = "A record with this value already exists. Please use a unique value.";
+		}
+
+		body.put("status", HttpStatus.CONFLICT.value());
+		body.put("error", "Data Integrity Violation");
+		body.put("message", message);
+
+		return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+
 	}
 
 	@ExceptionHandler(APIException.class)
