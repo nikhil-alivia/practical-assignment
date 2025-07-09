@@ -5,6 +5,7 @@ import dev.nikhilj.productservice.dtos.PaginatedProductsDTO;
 import dev.nikhilj.productservice.dtos.ProductDTO;
 import dev.nikhilj.productservice.entities.Price;
 import dev.nikhilj.productservice.entities.Product;
+import dev.nikhilj.productservice.repositories.PriceRepository;
 import dev.nikhilj.productservice.repositories.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ public class ProductService {
 
 	private final ProductRepository productRepository;
 	private final PriceService priceService;
+	private final PriceRepository priceRepository;
 
 	public PaginatedProductsDTO getProductsPaginated(int pageNo, int pageSize, String searchString) {
 		Pageable pageable = PageRequest.of(pageNo, pageSize);
@@ -79,6 +81,27 @@ public class ProductService {
 		}
 
 		return mapToDTO(product);
+	}
+
+	@Transactional
+	public ProductDTO reserveProduct(Long priceId, int quantityToReserve) {
+		Price price = priceRepository.getPriceById(priceId)
+				.orElseThrow(() -> new APIException(HttpStatus.NOT_FOUND, "Price not found with id " + priceId));
+		Product product = productRepository.findAndLockByActivePrice(price)
+				.orElseThrow(() -> new APIException(HttpStatus.NOT_FOUND, "Product not found with active price " + priceId));
+		if (product.getStockQuantity() <= quantityToReserve) {
+			throw new APIException(HttpStatus.BAD_REQUEST, "Insufficient stock");
+		}
+		product.setStockQuantity(product.getStockQuantity() - quantityToReserve);
+		productRepository.save(product);
+		return new ProductDTO(
+				product.getId(),
+				product.getName(),
+				product.getDescription(),
+				product.getStockQuantity(),
+				price.getAmount(),
+				price.getId()
+		);
 	}
 
 	@Transactional

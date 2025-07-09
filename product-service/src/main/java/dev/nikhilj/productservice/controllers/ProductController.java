@@ -2,6 +2,7 @@ package dev.nikhilj.productservice.controllers;
 
 import dev.nikhilj.productservice.dtos.PaginatedProductsDTO;
 import dev.nikhilj.productservice.dtos.ProductDTO;
+import dev.nikhilj.productservice.dtos.ReserveProductDTO;
 import dev.nikhilj.productservice.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -57,4 +58,14 @@ public class ProductController {
 		productService.deleteProductById(productId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
+
+	@PostMapping("/reserve-stock")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<ProductDTO> reserveProduct(
+			@RequestBody @Valid ReserveProductDTO reserveProductDTO
+	) {
+		ProductDTO productDTO = productService.reserveProduct(reserveProductDTO.priceId(), reserveProductDTO.quantityToReserve());
+		return ResponseEntity.ok(productDTO);
+	}
+
 }

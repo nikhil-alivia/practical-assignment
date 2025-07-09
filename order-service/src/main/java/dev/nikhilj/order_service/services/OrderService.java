@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -22,8 +24,10 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
 	private final OrderRepository orderRepository;
+	private final ProductClientService productService;
 
 
+	@Transactional
 	public OrderDTO createOrder(CreateOrderDTO createOrderDTO) {
 		Order order = new Order();
 		order.setUserId(createOrderDTO.user_id());
@@ -31,25 +35,38 @@ public class OrderService {
 		Set<OrderItem> orderItemsSet = new HashSet<>();
 		order.setTotal(new BigDecimal(0));
 		order = orderRepository.save(order);
-		Order finalOrder = order;
-		createOrderDTO.order_items().forEach(orderItemDto -> {
+		for (var orderItemDto : createOrderDTO.order_items()) {
+			ProductDTO productDTO;
+			try {
+				productDTO = productService.reserveStock(
+						orderItemDto.price_id(), orderItemDto.quantity()
+				);
+			} catch (WebClientResponseException we) {
+				order.setStatus(OrderStatus.FAILED);
+				orderRepository.save(order);
+				throw new APIException(
+						HttpStatus.BAD_REQUEST,
+						"Stock not enough for product with price_id : " + orderItemDto.price_id()
+				);
+			}
 			OrderItem orderItem = new OrderItem();
 			orderItem.setPriceId(orderItemDto.price_id());
 			orderItem.setQuantity(orderItemDto.quantity());
-			orderItem.setOrder(finalOrder);
-			// TODO: Make API call here to
-			//	  - validate the stock is present
-			//    - reserve the stock
-			//    - set the line item total
-			orderItem.setLineTotal(new BigDecimal(0));
+			orderItem.setOrder(order);
+			orderItem.setLineTotal(
+					productDTO.price().multiply(
+							new BigDecimal(orderItem.getQuantity())
+					)
+			);
 			orderItemsSet.add(orderItem);
-		});
+		}
 		order.setOrderItems(orderItemsSet);
 		order.setTotal(
 				order.getOrderItems()
 						.stream().map(OrderItem::getLineTotal)
 						.reduce(BigDecimal.ZERO, BigDecimal::add)
 		);
+		order.setStatus(OrderStatus.PENDING);
 		order = orderRepository.save(order);
 		return mapToDTO(order);
 	}
