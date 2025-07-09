@@ -23,4 +23,12 @@ public class UserPrincipal implements UserDetails {
 		this.password = password;
 		this.authorities = authorities;
 	}
+	public boolean isAdmin() {
+		for (GrantedAuthority authority : authorities) {
+			if ("ROLE_ADMIN".equals(authority.getAuthority())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

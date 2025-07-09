@@ -1,15 +1,18 @@
 package dev.nikhilj.order_service.services;
 
+import dev.nikhilj.common.security.UserPrincipal;
 import dev.nikhilj.common.security.exceptions.APIException;
-import dev.nikhilj.order_service.repositories.OrderRepository;
 import dev.nikhilj.order_service.dtos.*;
 import dev.nikhilj.order_service.entities.Order;
 import dev.nikhilj.order_service.entities.OrderItem;
 import dev.nikhilj.order_service.enums.OrderStatus;
+import dev.nikhilj.order_service.repositories.OrderRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -72,10 +75,25 @@ public class OrderService {
 	}
 
 	public PaginatedOrderDTO getAllOrders(int pageNo, int pageSize) {
-		Page<Order> orders = orderRepository
-				.findAll(
-						PageRequest.of(pageNo, pageSize)
-				);
+		Authentication authentication = SecurityContextHolder
+				.getContext()
+				.getAuthentication();
+		if (authentication == null || !authentication.isAuthenticated()) {
+			throw new APIException(HttpStatus.UNAUTHORIZED, "User is not authenticated");
+		}
+		UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+		Page<Order> orders;
+		if (principal.isAdmin()) {
+			orders = orderRepository
+					.findAll(
+							PageRequest.of(pageNo, pageSize)
+					);
+		} else {
+			orders = orderRepository
+					.findAllByUserId(
+							principal.getId(), PageRequest.of(pageNo, pageSize)
+					);
+		}
 		return new PaginatedOrderDTO(
 				orders.getContent()
 						.stream()
@@ -87,10 +105,6 @@ public class OrderService {
 				orders.getTotalPages(),
 				orders.isLast()
 		);
-	}
-
-	public PaginatedOrderDTO getUserOrders(int pageNo, int pageSize) {
-		return null;
 	}
 
 	public OrderDTO getOrder(Long orderId) {
