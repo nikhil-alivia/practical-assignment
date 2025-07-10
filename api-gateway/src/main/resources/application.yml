@@ -1,39 +1,26 @@
-# Set the port for the gateway. This will be the main entry point for all external traffic.
 server:
   port: 8080
 
-# Give the gateway service a name so it can register with Eureka
 spring:
   application:
     name: api-gateway
 
-  # Configuration for the routes
   cloud:
     gateway:
-      routes:
-        # A unique ID for the route to the auth service
-        - id: auth-service
-          # The destination URI. "lb://" means "look up in Eureka (load-balanced)".
-          uri: lb://auth-service
-          # The condition to match. This route applies to any path starting with /api/auth/
-          predicates:
-            - Path=/api/auth/**
+      server:
+        webmvc:
+          routes:
+            - id: auth-service
+              uri: lb://auth-service
+              predicates:
+                - Path=/api/auth/**
 
-        # A unique ID for the route to the product service
-        - id: product-service
-          uri: lb://product-service
-          predicates:
-            - Path=/api/products/**
+            - id: product-service
+              uri: lb://product-service
+              predicates:
+                - Path=/api/products/**
 
-        # Add another route for your order service here...
-        - id: order-service
-          uri: lb://order-service
-          predicates:
-            - Path=/api/orders/**
-
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+            - id: order-service
+              uri: lb://order-service
+              predicates:
+                - Path=/api/orders/**

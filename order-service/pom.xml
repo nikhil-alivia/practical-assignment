@@ -11,8 +11,8 @@
     <groupId>dev.nikhilj</groupId>
     <artifactId>order-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>order_service</name>
-    <description>order_service</description>
+    <name>order-service</name>
+    <description>order-service</description>
     <url/>
     <licenses>
         <license/>
